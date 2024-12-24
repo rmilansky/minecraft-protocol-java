@@ -3,6 +3,7 @@ package by.milansky.protocol.bukkit.player;
 import by.milansky.protocol.api.packet.Packet;
 import by.milansky.protocol.api.packet.handler.PacketHandler;
 import by.milansky.protocol.base.packet.handler.BaseMergedPacketHandler;
+import by.milansky.protocol.vanilla.codec.VanillaInboundPacketHandler;
 import by.milansky.protocol.vanilla.codec.VanillaOutboundPacketHandler;
 import by.milansky.protocol.vanilla.codec.VanillaPacketEncoder;
 import by.milansky.protocol.vanilla.registry.VanillaStateRegistry;
@@ -66,7 +67,6 @@ public final class ProtocolPlayer {
 
     @Getter
     Player nativePlayer;
-    @NonFinal
     BaseMergedPacketHandler packetHandler = BaseMergedPacketHandler.create();
 
     private static @NotNull Field fieldByType(final Class<?> clazz, final Class<?> fieldClass) {
@@ -87,12 +87,19 @@ public final class ProtocolPlayer {
 
     public void appendPipeline() {
         val channel = channel();
+
         val outboundHandler = VanillaOutboundPacketHandler.create(
                 VanillaProtocolVersion.MINECRAFT_1_12_2,
                 VanillaStateRegistry.standardRegistry(), packetHandler
         );
 
-        channel.pipeline().addBefore("encoder", "milansky-protocol-decoder", outboundHandler);
+        val inboundHandler = VanillaInboundPacketHandler.create(
+                VanillaProtocolVersion.MINECRAFT_1_12_2,
+                VanillaStateRegistry.standardRegistry(), packetHandler
+        );
+
+        channel.pipeline().addBefore("decoder", "milansky-protocol-inbound-handler", inboundHandler);
+        channel.pipeline().addBefore("encoder", "milansky-protocol-outbound-handler", outboundHandler);
         channel.pipeline().addAfter("encoder", "milansky-protocol-encoder",
                 VanillaPacketEncoder.create(VanillaProtocolVersion.MINECRAFT_1_12_2, VanillaStateRegistry.standardRegistry()));
     }

@@ -21,7 +21,6 @@ import java.util.Map;
 /**
  * @author milansky
  */
-@SuppressWarnings("deprecation")
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public final class UnmodifiableVersionMapping implements ProtocolVersionMapping {
@@ -79,7 +78,7 @@ public final class UnmodifiableVersionMapping implements ProtocolVersionMapping 
             validateMappingPair(any, i);
 
             val version = (ProtocolVersion) any[i];
-            val identifier = (Integer) any[i + 1];
+            val identifier = (int) any[i + 1];
 
             downstreamMap.put(version, identifier);
 
@@ -105,11 +104,11 @@ public final class UnmodifiableVersionMapping implements ProtocolVersionMapping 
 
     private static void fillGapsInMapping(ProtocolVersion latestVersion, Object2IntArrayMap<ProtocolVersion> downstreamMap) {
         ProtocolVersion highestVersion = null;
-        Integer highestIdentifier = null;
+        int highestIdentifier = -1;
 
         for (val entry : downstreamMap.entrySet()) {
             val version = entry.getKey();
-            val identifier = entry.getValue();
+            val identifier = (int) entry.getValue();
 
             if (highestVersion == null || version.greater(highestVersion)) {
                 highestVersion = version;

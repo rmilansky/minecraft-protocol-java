@@ -4,6 +4,7 @@ import by.milansky.protocol.api.packet.handler.PacketHandleResult;
 import by.milansky.protocol.base.packet.handler.BasePacketHandleResult;
 import by.milansky.protocol.base.packet.handler.annotation.PacketProcessor;
 import by.milansky.protocol.vanilla.standard.ClientboundTeam;
+import by.milansky.protocol.vanilla.standard.ServerboundTabcomplete;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
@@ -28,5 +29,12 @@ public final class NametagDebugHandler {
 
         // Всё окей, просто разрешаем его отправку
         return BasePacketHandleResult.ok();
+    }
+
+    @PacketProcessor
+    public @NotNull PacketHandleResult handle(final ServerboundTabcomplete tabcomplete) {
+        log.info("Inbound tabcomplete packet: {}", tabcomplete);
+
+        return BasePacketHandleResult.cancel();
     }
 }
