@@ -1,0 +1,52 @@
+plugins {
+    id 'com.gradleup.shadow' version '9.0.0-beta4' apply false
+}
+
+allprojects {
+    group = 'by.milansky'
+    version = '1.0.0'
+}
+
+configure(subprojects - project(':examples')) {
+    apply plugin: 'java'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+
+        maven {
+            url = "https://repo.abelix.club/repository/public/"
+        }
+    }
+
+    dependencies {
+        compileOnly libs.lombok
+        annotationProcessor libs.lombok
+
+        testCompileOnly libs.lombok
+        testAnnotationProcessor libs.lombok
+
+        compileOnly libs.netty.all
+        compileOnly libs.log4j.core
+        compileOnly libs.jetbrains.annotations
+
+        compileOnly libs.jackson.databind
+        compileOnly libs.gson
+
+        compileOnly libs.adventure.api
+        compileOnly libs.adventure.nbt
+        compileOnly libs.adventure.serializer.gson
+        compileOnly libs.adventure.serializer.legacy
+        compileOnly libs.adventure.serializer.gson.legacy
+
+        testImplementation libs.netty.all
+        testImplementation libs.log4j.core
+
+        testImplementation libs.junit.api
+        testRuntimeOnly libs.junit.engine
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}

@@ -1,0 +1,28 @@
+plugins {
+    id 'com.gradleup.shadow'
+}
+
+dependencies {
+    compileOnly libs.spigot.api
+
+    implementation project(":api")
+    implementation project(":base")
+    implementation project(":vanilla-protocol")
+
+    implementation libs.jackson.databind
+
+    implementation libs.adventure.api
+    implementation libs.adventure.nbt
+    implementation libs.adventure.serializer.gson
+    implementation libs.adventure.serializer.legacy
+    implementation libs.adventure.serializer.gson.legacy
+
+    compileOnly libs.spigot.annotations
+    annotationProcessor libs.spigot.annotations
+}
+
+tasks {
+    build {
+        dependsOn(tasks.shadowJar)
+    }
+}

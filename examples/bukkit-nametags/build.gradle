@@ -1,0 +1,11 @@
+dependencies {
+    compileOnly libs.spigot.api
+
+    compileOnly project(":bukkit")
+    compileOnly project(":api")
+    compileOnly project(":base")
+    compileOnly project(":vanilla-protocol")
+
+    compileOnly libs.spigot.annotations
+    annotationProcessor libs.spigot.annotations
+}

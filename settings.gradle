@@ -1,0 +1,65 @@
+rootProject.name = 'minecraft-protocol'
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            version("lombok", "1.18.36")
+            version("netty", "4.1.72.Final")
+            version("annotations", "23.0.0")
+            version("fastutil", "8.5.6")
+            version("junit", "5.8.2")
+            version("spigot", "1.8.8-R0.1-SNAPSHOT")
+            version("spigot-annotations", "1.2.3-SNAPSHOT")
+            version("mockbukkit", "3.133.2")
+            version("log4j", "2.17.0")
+            version("jackson", "2.18.2")
+            version("adventure", "4.18.0")
+            version("adventure-facet", "4.3.4")
+            version("gson", "2.10.1")
+
+            library("lombok", "org.projectlombok", "lombok").versionRef("lombok")
+
+            library("netty-all", "io.netty", "netty-all").versionRef("netty")
+            library("netty-handler", "io.netty", "netty-handler").versionRef("netty")
+            library("netty-codec", "io.netty", "netty-codec").versionRef("netty")
+            library("netty-codec-http", "io.netty", "netty-codec-http").versionRef("netty")
+            library("netty-epoll", "io.netty", "netty-transport-native-epoll").versionRef("netty")
+
+            library("log4j-core", "org.apache.logging.log4j", "log4j-core").versionRef("log4j")
+            library("log4j-iostreams", "org.apache.logging.log4j", "log4j-iostreams").versionRef("log4j")
+
+            library("jackson-databind", "com.fasterxml.jackson.core", "jackson-databind").versionRef("jackson")
+
+            library("jetbrains-annotations", "org.jetbrains", "annotations").versionRef("annotations")
+            library("fastutil", "it.unimi.dsi", "fastutil-core").versionRef("fastutil")
+
+            library("spigot-api", "org.spigotmc", "spigot-api").versionRef("spigot")
+            library("spigot-all", "org.spigotmc", "spigot").versionRef("spigot")
+            library("spigot-annotations", "org.spigotmc", "plugin-annotations").versionRef("spigot-annotations")
+
+            library("adventure-api", "net.kyori", "adventure-api").versionRef("adventure")
+            library("adventure-bom", "net.kyori", "adventure-bom").versionRef("adventure")
+            library("adventure-nbt", "net.kyori", "adventure-nbt").versionRef("adventure")
+            library("adventure-facet", "net.kyori", "adventure-platform-facet").versionRef("adventure-facet")
+            library("adventure-serializer-gson", "net.kyori", "adventure-text-serializer-gson").versionRef("adventure")
+            library("adventure-serializer-gson-legacy", "net.kyori", "adventure-text-serializer-json-legacy-impl").versionRef("adventure")
+            library("adventure-serializer-legacy", "net.kyori", "adventure-text-serializer-legacy").versionRef("adventure")
+
+            library("gson", "com.google.code.gson", "gson").versionRef("gson")
+
+            library("junit-engine", "org.junit.jupiter", "junit-jupiter-engine").versionRef("junit")
+            library("junit-api", "org.junit.jupiter", "junit-jupiter-api").versionRef("junit")
+
+            library("mockbukkit", "com.github.seeseemelk", "MockBukkit-v1.21").versionRef("mockbukkit")
+        }
+    }
+}
+
+include 'base'
+include 'api'
+include 'vanilla-protocol'
+include 'bukkit'
+include 'examples'
+include 'examples:bukkit-nametags'
+findProject(':examples:bukkit-nametags')?.name = 'bukkit-nametags'
+
