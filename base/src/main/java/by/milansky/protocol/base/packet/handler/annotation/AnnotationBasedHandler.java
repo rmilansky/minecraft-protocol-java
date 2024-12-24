@@ -51,8 +51,6 @@ public final class AnnotationBasedHandler implements PacketHandler {
                 val processorHandler = new PacketHandler() {
                     @Override
                     public @NotNull PacketHandleResult handle(final @NotNull Packet packet) {
-                        log.info("Handling packet {}", packet);
-
                         if (argumentType != Packet.class && packet.getClass() != argumentType)
                             return BasePacketHandleResult.ok();
 
