@@ -3,7 +3,7 @@
   <br>
   <img src="https://img.shields.io/badge/language-java-gold?style=flat" />
   <img src="https://img.shields.io/badge/beta-v1.0-gold?style=flat" />
-  <img src="https://img.shields.io/github/stars/rmilansky/protocol?style=flat" />
+  <img src="https://img.shields.io/github/stars/rmilansky/minecraft-protocol-java?style=flat" />
 </div>
 
 # Введение
