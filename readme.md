@@ -34,10 +34,10 @@ Minecraft Protocol - проект, написанный мной из-за то�
 ```java
 @Log4j2
 public final class ClientboundTeamHandler {
-@PacketProcessor
-public @NotNull PacketHandleResult handle(final ClientboundTeam team) {
-// Логируем, что сервер пытается отправить пакет
-log.info("Outbound team packet: {}", team);
+    @PacketProcessor
+    public @NotNull PacketHandleResult handle(final ClientboundTeam team) {
+        // Логируем, что сервер пытается отправить пакет
+        log.info("Outbound team packet: {}", team);
 
         if (team.containsPlayer("milanskyy")) {
             // Предотвращаем отправку пакета
