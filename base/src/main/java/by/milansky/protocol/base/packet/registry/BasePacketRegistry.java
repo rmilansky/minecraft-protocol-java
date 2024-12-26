@@ -4,7 +4,7 @@ import by.milansky.protocol.api.packet.Packet;
 import by.milansky.protocol.api.packet.registry.ProtocolPacketRegistry;
 import by.milansky.protocol.api.version.ProtocolVersion;
 import by.milansky.protocol.api.version.ProtocolVersionMapping;
-import io.netty.util.collection.IntObjectHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 /**
  * @author milansky
- *
+ * <p>
  * Выглядит убого, но примерно только так можно добиться константного времени
  * не подключая лишних либ (e.g. BidirectionalMap - де-факто то же самое)
  */
@@ -31,7 +31,7 @@ public final class BasePacketRegistry implements ProtocolPacketRegistry {
         packetToMapping.put(packetClass, mapping);
 
         mapping.asVersionMap().forEach((version, id) -> {
-            idToPacket.computeIfAbsent(version, v -> new IntObjectHashMap<>()).put(id, packetClass);
+            idToPacket.computeIfAbsent(version, v -> new Int2ObjectArrayMap<>()).put(id, packetClass);
         });
     }
 

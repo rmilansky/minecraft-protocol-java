@@ -28,23 +28,6 @@ public final class UnmodifiableVersionMapping implements ProtocolVersionMapping 
     Map<ProtocolVersion, Integer> downstreamMap;
     @Nullable ProtocolVersion latestVersion;
 
-    public int get(final @NotNull ProtocolVersion version) {
-        if (latestVersion != null && version.greaterEqual(latestVersion)) {
-            throw new UnsupportedPacketException();
-        }
-
-        return downstreamMap.getOrDefault(version, -1);
-    }
-
-    public @NotNull @Unmodifiable Map<ProtocolVersion, Integer> asVersionMap() {
-        return downstreamMap;
-    }
-
-    @Override
-    public String toString() {
-        return downstreamMap.toString();
-    }
-
     public static @NotNull UnmodifiableVersionMapping createMapping(@NotNull Object... any) {
         @Nullable ProtocolVersion latestVersion = null;
 
@@ -129,5 +112,22 @@ public final class UnmodifiableVersionMapping implements ProtocolVersionMapping 
                 current = current.next();
             }
         }
+    }
+
+    public int get(final @NotNull ProtocolVersion version) {
+        if (latestVersion != null && version.greaterEqual(latestVersion)) {
+            throw new UnsupportedPacketException();
+        }
+
+        return downstreamMap.getOrDefault(version, -1);
+    }
+
+    public @NotNull @Unmodifiable Map<ProtocolVersion, Integer> asVersionMap() {
+        return downstreamMap;
+    }
+
+    @Override
+    public String toString() {
+        return downstreamMap.toString();
     }
 }

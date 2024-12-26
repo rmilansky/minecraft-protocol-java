@@ -14,30 +14,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UnmodifiableVersionMappingTest {
-    @Getter
-    @RequiredArgsConstructor
-    @Accessors(chain = true, fluent = true)
-    @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-    private enum TestProtocolVersion implements ProtocolVersion {
-        MINECRAFT_1_7_2(5),
-        MINECRAFT_1_7_6(6),
-        MINECRAFT_1_8(47),
-        MINECRAFT_1_9(107),
-        MINECRAFT_1_12(335),
-        MINECRAFT_1_20(763),
-        MINECRAFT_1_21_4(1000);
-
-        int protocol;
-
-        @Override
-        public ProtocolVersion next() {
-            int ordinal = this.ordinal();
-            return ordinal < TestProtocolVersion.values().length - 1
-                    ? TestProtocolVersion.values()[ordinal + 1]
-                    : null;
-        }
-    }
-
     @Test
     void createMapping_shouldCreateValidMapping() {
         val mappings = new Object[]{
@@ -116,5 +92,29 @@ class UnmodifiableVersionMappingTest {
         assertEquals(2, map.get(TestProtocolVersion.MINECRAFT_1_8));
 
         assertThrows(UnsupportedOperationException.class, () -> map.put(TestProtocolVersion.MINECRAFT_1_8, 1));
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    @Accessors(chain = true, fluent = true)
+    @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+    private enum TestProtocolVersion implements ProtocolVersion {
+        MINECRAFT_1_7_2(5),
+        MINECRAFT_1_7_6(6),
+        MINECRAFT_1_8(47),
+        MINECRAFT_1_9(107),
+        MINECRAFT_1_12(335),
+        MINECRAFT_1_20(763),
+        MINECRAFT_1_21_4(1000);
+
+        int protocol;
+
+        @Override
+        public ProtocolVersion next() {
+            int ordinal = this.ordinal();
+            return ordinal < TestProtocolVersion.values().length - 1
+                    ? TestProtocolVersion.values()[ordinal + 1]
+                    : null;
+        }
     }
 }

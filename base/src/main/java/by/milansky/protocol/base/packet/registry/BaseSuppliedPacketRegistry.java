@@ -4,6 +4,7 @@ import by.milansky.protocol.api.packet.registry.ProtocolPacketRegistry;
 import lombok.AccessLevel;
 import lombok.experimental.Delegate;
 import lombok.experimental.FieldDefaults;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -29,6 +30,7 @@ public final class BaseSuppliedPacketRegistry implements ProtocolPacketRegistry 
         this(BasePacketRegistry.create(), registryConsumer);
     }
 
+    @Contract("_ -> new")
     public static ProtocolPacketRegistry create(final @NotNull Consumer<ProtocolPacketRegistry> registryConsumer) {
         return new BaseSuppliedPacketRegistry(BasePacketRegistry.create(), registryConsumer);
     }

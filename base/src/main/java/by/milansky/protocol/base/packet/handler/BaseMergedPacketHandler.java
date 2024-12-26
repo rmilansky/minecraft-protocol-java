@@ -3,10 +3,12 @@ package by.milansky.protocol.base.packet.handler;
 import by.milansky.protocol.api.packet.Packet;
 import by.milansky.protocol.api.packet.handler.PacketHandleResult;
 import by.milansky.protocol.api.packet.handler.PacketHandler;
+import io.netty.channel.Channel;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -31,17 +33,18 @@ public final class BaseMergedPacketHandler implements PacketHandler {
         };
     }
 
+    @Contract("_ -> new")
     public static BaseMergedPacketHandler create(final PacketHandler... childHandlers) {
         // TODO: optimize algorithm if one of the handlers is already a merged handler
         return create(new HashSet<>()).append(childHandlers);
     }
 
     @Override
-    public @NotNull PacketHandleResult handle(final @NotNull Packet packet) {
+    public @NotNull PacketHandleResult handle(final @NotNull Channel channel, final @NotNull Packet packet) {
         val result = BasePacketHandleResult.createEmpty();
 
         for (val childHandler : childHandlers) {
-            val childResult = childHandler.handle(packet);
+            val childResult = childHandler.handle(channel, packet);
 
             if (childResult.replacement() != null)
                 result.setReplacement(childResult.replacement());

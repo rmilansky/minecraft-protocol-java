@@ -10,7 +10,6 @@ import com.google.gson.internal.LazilyParsedNumber;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.handler.codec.CorruptedFrameException;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
@@ -187,15 +186,15 @@ public class ProtocolUtility {
     }
 
     private static String readString(ByteBuf buf, int cap, int length) {
-        String str = buf.toString(buf.readerIndex(), length, StandardCharsets.UTF_8);
-        buf.skipBytes(length);
-        return str;
+        val charArray = new byte[length];
+
+        buf.readBytes(charArray);
+
+        return new String(charArray);
     }
 
     public static void writeString(ByteBuf buf, CharSequence str) {
-        int size = ByteBufUtil.utf8Bytes(str);
-        writeVarInt(buf, size);
-        buf.writeCharSequence(str, StandardCharsets.UTF_8);
+        writeByteArray(buf, str.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     public static byte[] readByteArray(ByteBuf buf) {

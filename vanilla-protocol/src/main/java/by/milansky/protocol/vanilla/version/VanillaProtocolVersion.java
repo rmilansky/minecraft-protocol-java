@@ -68,11 +68,16 @@ public enum VanillaProtocolVersion implements ProtocolVersion {
     MINECRAFT_1_21_4(769, "1.21.4");
 
     public static final VanillaProtocolVersion[] VALUES = values();
+
     private static final Map<Integer, VanillaProtocolVersion> PROTOCOL_VERSION_MAP = new HashMap<>();
+    private static final Map<String, VanillaProtocolVersion> PROTOCOL_VERSION_NAME_MAP = new HashMap<>();
 
     static {
-        for (val value : VALUES)
+        for (val value : VALUES) {
             PROTOCOL_VERSION_MAP.put(value.protocol, value);
+
+            for (val name : value.names) PROTOCOL_VERSION_NAME_MAP.put(name, value);
+        }
     }
 
     int protocol;
@@ -85,6 +90,10 @@ public enum VanillaProtocolVersion implements ProtocolVersion {
 
     public static @NotNull VanillaProtocolVersion versionByProtocol(final int protocol) {
         return PROTOCOL_VERSION_MAP.getOrDefault(protocol, UNKNOWN);
+    }
+
+    public static @NotNull VanillaProtocolVersion versionByName(final String name) {
+        return PROTOCOL_VERSION_NAME_MAP.getOrDefault(name, UNKNOWN);
     }
 
     public @NotNull String firstName() {

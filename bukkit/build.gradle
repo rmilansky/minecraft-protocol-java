@@ -9,8 +9,6 @@ dependencies {
     implementation project(":base")
     implementation project(":vanilla-protocol")
 
-    implementation libs.jackson.databind
-
     implementation libs.adventure.api
     implementation libs.adventure.nbt
     implementation libs.adventure.serializer.gson

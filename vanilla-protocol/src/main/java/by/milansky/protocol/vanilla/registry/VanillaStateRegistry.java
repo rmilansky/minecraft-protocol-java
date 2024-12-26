@@ -4,10 +4,7 @@ import by.milansky.protocol.api.state.ProtocolState;
 import by.milansky.protocol.base.packet.registry.BaseStateRegistry;
 import by.milansky.protocol.base.packet.registry.BaseSuppliedPacketRegistry;
 import by.milansky.protocol.base.version.UnmodifiableVersionMapping;
-import by.milansky.protocol.vanilla.standard.ClientboundTeam;
-import by.milansky.protocol.vanilla.standard.ClientboundUpdateHealth;
-import by.milansky.protocol.vanilla.standard.ServerboundHandshake;
-import by.milansky.protocol.vanilla.standard.ServerboundTabcomplete;
+import by.milansky.protocol.vanilla.standard.*;
 import by.milansky.protocol.vanilla.version.VanillaProtocolVersion;
 import lombok.extern.log4j.Log4j2;
 
@@ -17,6 +14,14 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public final class VanillaStateRegistry extends BaseStateRegistry {
     private VanillaStateRegistry() {
+        registerClientboundState(ProtocolState.LOGIN, BaseSuppliedPacketRegistry.create(registry -> {
+            registry.register(ClientboundLoginSuccess.class,
+                    UnmodifiableVersionMapping.createMapping(VanillaProtocolVersion.MINECRAFT_1_7_2, 0x02));
+
+            registry.register(ClientboundCompression.class,
+                    UnmodifiableVersionMapping.createMapping(VanillaProtocolVersion.MINECRAFT_1_7_2, 0x03));
+        }));
+
         registerServerboundState(ProtocolState.HANDSHAKE, BaseSuppliedPacketRegistry.create(registry -> {
             registry.register(ServerboundHandshake.class,
                     UnmodifiableVersionMapping.createMapping(VanillaProtocolVersion.MINECRAFT_1_7_2, 0x00));
@@ -35,9 +40,6 @@ public final class VanillaStateRegistry extends BaseStateRegistry {
         }));
 
         registerClientboundState(ProtocolState.PLAY, BaseSuppliedPacketRegistry.create(registry -> {
-            registry.register(ClientboundUpdateHealth.class,
-                    UnmodifiableVersionMapping.createMapping(VanillaProtocolVersion.MINECRAFT_1_8, 0x41));
-
             registry.register(ClientboundTeam.class,
                     UnmodifiableVersionMapping.createMapping(VanillaProtocolVersion.MINECRAFT_1_8, 0x3E,
                             VanillaProtocolVersion.MINECRAFT_1_9, 0x41, VanillaProtocolVersion.MINECRAFT_1_12, 0x43,
