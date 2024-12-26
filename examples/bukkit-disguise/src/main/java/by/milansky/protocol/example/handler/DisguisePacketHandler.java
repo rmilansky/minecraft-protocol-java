@@ -28,24 +28,25 @@ public final class DisguisePacketHandler {
         for (val item : playerInfo.items()) {
             val player = storage.disguisePlayer(item.username());
 
-            player.fakeName().ifPresent(item::username);
+            player.fakeNameOptional().ifPresent(item::username);
         }
 
         return BasePacketHandleResult.replace(playerInfo);
     }
 
     @PacketProcessor
-    public @NotNull PacketHandleResult handle(final Channel ignored, final ClientboundTeam playerInfo) {
-        val players = playerInfo.players();
+    public @NotNull PacketHandleResult handle(final Channel ignored, final ClientboundTeam team) {
+        val players = team.players();
 
         if (players == null) return BasePacketHandleResult.ok();
 
         for (int i = 0; i < players.length; i++) {
-            val disguisePlayer = storage.disguisePlayer(players[i]);
+            val teamPlayerName = players[i];
+            val disguisePlayer = storage.disguisePlayer(teamPlayerName);
 
-            players[i] = disguisePlayer.fakeName().orElse(players[i]);
+            players[i] = disguisePlayer.fakeNameOptional().orElse(teamPlayerName);
         }
 
-        return BasePacketHandleResult.replace(playerInfo);
+        return BasePacketHandleResult.replace(team);
     }
 }

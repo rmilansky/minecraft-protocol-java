@@ -40,7 +40,7 @@ public final class DisguiseCommand implements CommandExecutor {
         val argument = arguments[0];
 
         if (argument.equalsIgnoreCase("reset")) {
-            disguisePlayer.updateFakeName(Optional.empty());
+            disguisePlayer.updateFakeName(null);
             return true;
         }
 

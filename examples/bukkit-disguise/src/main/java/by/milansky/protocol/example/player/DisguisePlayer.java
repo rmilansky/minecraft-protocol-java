@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -23,7 +24,7 @@ import java.util.Optional;
 public final class DisguisePlayer {
     String name;
     @NonFinal
-    Optional<String> fakeName = Optional.empty();
+    String fakeName;
     @Setter
     @NonFinal
     ProtocolPlayer protocolPlayer;
@@ -32,17 +33,17 @@ public final class DisguisePlayer {
         return Bukkit.getPlayer(name);
     }
 
-    public void updateFakeName(final String fakeName) {
-        updateFakeName(Optional.ofNullable(fakeName));
+    public @NotNull Optional<String> fakeNameOptional() {
+        return Optional.ofNullable(fakeName);
     }
 
-    public void updateFakeName(final Optional<String> fakeName) {
-        val oldName = this.fakeName.orElse(this.name);
-        val name = fakeName.orElse(this.name);
+    public void updateFakeName(final String fakeName) {
+        if (this.fakeName != null && this.fakeName.equals(fakeName)) return;
+
+        val oldName = this.fakeName == null ? name : this.fakeName;
+        val name = fakeName == null ? this.name : fakeName;
 
         this.fakeName = fakeName;
-
-        if (oldName.equals(name)) return;
 
         protocolPlayer.sendPacket(new ClientboundUpsertPlayerInfo(
                 ClientboundUpsertPlayerInfo.Action.REMOVE_PLAYER,
@@ -50,14 +51,9 @@ public final class DisguisePlayer {
                         new ClientboundUpsertPlayerInfo.Item(
                                 bukkitHandle().getUniqueId(),
 
-                                oldName,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null
+                                oldName, null, null,
+                                null, null, null,
+                                null, null
                         )
                 }
         ));
@@ -68,14 +64,9 @@ public final class DisguisePlayer {
                         new ClientboundUpsertPlayerInfo.Item(
                                 bukkitHandle().getUniqueId(),
 
-                                name,
-                                new Property[0],
-                                null,
-                                0,
-                                0,
-                                null,
-                                null,
-                                null
+                                name, new Property[0], null,
+                                0, 0, null,
+                                null, null
                         )
                 }
         ));
