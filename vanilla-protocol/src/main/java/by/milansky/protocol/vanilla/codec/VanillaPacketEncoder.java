@@ -30,24 +30,26 @@ public final class VanillaPacketEncoder extends MessageToByteEncoder<Packet> {
     @Override
     protected void encode(
             final @NotNull ChannelHandlerContext ctx,
-            final @NotNull Packet packet,
+            @NotNull Packet packet,
             final @NotNull ByteBuf byteBuf
     ) {
-        try {
-            val clientboundRegistry = stateRegistry.clientbound(ctx.channel().protocolState());
+        val channel = ctx.channel();
+        val result = channel.packetHandler().handle(channel, packet);
 
-            if (clientboundRegistry == null)
-                throw new IllegalStateException("Cannot find clientbound registry for packet: " + packet);
+        if (result.cancelled()) return;
+        if (result.replacement() != null) packet = result.replacement();
 
-            val mapping = clientboundRegistry.getMapping(packet.getClass());
+        val clientboundRegistry = stateRegistry.clientbound(ctx.channel().protocolState());
 
-            if (mapping == null)
-                throw new IllegalStateException("Failed to find mapper for " + packet.getClass());
+        if (clientboundRegistry == null)
+            throw new IllegalStateException("Cannot find clientbound registry for packet: " + packet);
 
-            ProtocolUtility.writeVarInt(byteBuf, mapping.get(version));
-            packet.encode(byteBuf, version);
-        } catch (final Throwable throwable) {
-            log.catching(throwable);
-        }
+        val mapping = clientboundRegistry.getMapping(packet.getClass());
+
+        if (mapping == null)
+            throw new IllegalStateException("Failed to find mapper for " + packet.getClass());
+
+        ProtocolUtility.writeVarInt(byteBuf, mapping.get(version));
+        packet.encode(byteBuf, version);
     }
 }

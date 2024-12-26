@@ -60,8 +60,7 @@ public final class VanillaChannelInitializer extends ChannelInitializer<Channel>
 
         val encoder = (MessageToByteEncoder<?>) channel.pipeline().get(encoderName);
         val outboundHandler = VanillaOutboundPacketHandler.create(
-                version, VanillaStateRegistry.standardRegistry(),
-                packetHandler, encoder
+                version, VanillaStateRegistry.standardRegistry(), encoder
         );
 
         pipeline.replace(encoder, encoderName, outboundHandler);

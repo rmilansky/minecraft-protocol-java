@@ -1,6 +1,7 @@
 package by.milansky.protocol.vanilla.utility;
 
 import by.milansky.protocol.api.version.ProtocolVersion;
+import by.milansky.protocol.vanilla.property.Property;
 import by.milansky.protocol.vanilla.version.VanillaProtocolVersion;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -405,6 +406,39 @@ public class ProtocolUtility {
         } else {
             writeString(buf, getJsonChatSerializer(version).serialize(component));
         }
+    }
+
+    public static void writeProperties(ByteBuf buf, Property[] properties) {
+        writeVarInt(buf, properties.length);
+
+        for (val property : properties) {
+            writeString(buf, property.name());
+            writeString(buf, property.value());
+
+            val signature = property.signature();
+
+            if (signature != null && !signature.isEmpty()) {
+                buf.writeBoolean(true);
+                writeString(buf, signature);
+            } else {
+                buf.writeBoolean(false);
+            }
+        }
+    }
+
+    public static Property[] readProperties(ByteBuf buf) {
+        val properties = new Property[readVarInt(buf)];
+
+        for (int i = 0; i < properties.length; i++) {
+            val name = readString(buf);
+            val value = readString(buf);
+
+            var signature = "";
+            if (buf.readBoolean()) signature = readString(buf);
+
+            properties[i] = new Property(name, value, signature);
+        }
+        return properties;
     }
 
     public static BinaryTag serializeBinaryTag(final JsonElement json) {

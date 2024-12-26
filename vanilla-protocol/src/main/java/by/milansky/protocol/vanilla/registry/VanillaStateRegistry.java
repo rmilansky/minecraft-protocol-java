@@ -40,6 +40,15 @@ public final class VanillaStateRegistry extends BaseStateRegistry {
         }));
 
         registerClientboundState(ProtocolState.PLAY, BaseSuppliedPacketRegistry.create(registry -> {
+            registry.register(ClientboundUpsertPlayerInfo.class,
+                    UnmodifiableVersionMapping.createMapping(VanillaProtocolVersion.MINECRAFT_1_8, 0x38,
+                            VanillaProtocolVersion.MINECRAFT_1_9, 0x2D, VanillaProtocolVersion.MINECRAFT_1_12_1, 0x2E,
+                            VanillaProtocolVersion.MINECRAFT_1_13, 0x30, VanillaProtocolVersion.MINECRAFT_1_14, 0x33,
+                            VanillaProtocolVersion.MINECRAFT_1_15, 0x34, VanillaProtocolVersion.MINECRAFT_1_16, 0x33,
+                            VanillaProtocolVersion.MINECRAFT_1_16_2, 0x32, VanillaProtocolVersion.MINECRAFT_1_17, 0x36,
+                            VanillaProtocolVersion.MINECRAFT_1_19, 0x34, VanillaProtocolVersion.MINECRAFT_1_19_1, 0x37,
+                            VanillaProtocolVersion.MINECRAFT_1_19_3));
+
             registry.register(ClientboundTeam.class,
                     UnmodifiableVersionMapping.createMapping(VanillaProtocolVersion.MINECRAFT_1_8, 0x3E,
                             VanillaProtocolVersion.MINECRAFT_1_9, 0x41, VanillaProtocolVersion.MINECRAFT_1_12, 0x43,

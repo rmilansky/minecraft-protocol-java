@@ -61,5 +61,7 @@ include 'vanilla-protocol'
 include 'bukkit'
 include 'examples'
 include 'examples:bukkit-nametags'
+include 'examples:bukkit-disguise'
 findProject(':examples:bukkit-nametags')?.name = 'bukkit-nametags'
+findProject(':examples:bukkit-disguise')?.name = 'bukkit-disguise'
 

@@ -5,6 +5,7 @@ import by.milansky.protocol.bukkit.event.ProtocolPlayerCreateEvent;
 import by.milansky.protocol.example.handler.NametagDebugHandler;
 import by.milansky.protocol.vanilla.standard.ClientboundTeam;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -15,6 +16,7 @@ import org.bukkit.event.Listener;
 /**
  * @author milansky
  */
+@Log4j2
 @NoArgsConstructor(staticName = "create")
 public final class NametagListener implements Listener {
     @EventHandler
