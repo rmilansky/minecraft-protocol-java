@@ -441,6 +441,14 @@ public class ProtocolUtility {
         return properties;
     }
 
+    public static void writeEmptyEntityMetadata(final @NotNull ByteBuf buf, final @NotNull ProtocolVersion version) {
+        if (version.greaterEqual(VanillaProtocolVersion.MINECRAFT_1_9)) {
+            buf.writeByte(255);
+        } else {
+            buf.writeByte(127);
+        }
+    }
+
     public static BinaryTag serializeBinaryTag(final JsonElement json) {
         if (json instanceof JsonPrimitive jsonPrimitive) {
             if (jsonPrimitive.isNumber()) {

@@ -31,7 +31,7 @@ public final class ClientboundCompression implements Packet {
     }
 
     @Override
-    public void decode(@NotNull ByteBuf byteBuf, @NotNull ProtocolVersion version) {
+    public void decode(final @NotNull ByteBuf byteBuf, final @NotNull ProtocolVersion version) {
         threshold = byteBuf.readVarInt();
     }
 }

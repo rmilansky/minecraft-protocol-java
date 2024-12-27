@@ -36,7 +36,7 @@ public final class ClientboundTeam implements Packet {
     String[] players;
 
     @Override
-    public void encode(@NotNull ByteBuf byteBuf, @NotNull ProtocolVersion version) {
+    public void encode(final @NotNull ByteBuf byteBuf, final @NotNull ProtocolVersion version) {
         byteBuf.writeString(name);
         byteBuf.writeByte(mode.ordinal());
 
@@ -71,7 +71,7 @@ public final class ClientboundTeam implements Packet {
     }
 
     @Override
-    public void decode(@NotNull ByteBuf byteBuf, @NotNull ProtocolVersion version) {
+    public void decode(final @NotNull ByteBuf byteBuf, final @NotNull ProtocolVersion version) {
         name = byteBuf.readString();
         mode = TeamMode.VALUES[byteBuf.readByte()];
 
