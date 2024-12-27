@@ -1,10 +1,10 @@
 /**
  * @author milansky
  * <p>
- * Здесь находятся все классы, связанные с чтением/записью майнкрафт пакетов,
- * которая реализована разработчиками ядра - зачастую прокси-классы, которые позволяют нам
- * встроить свою логику в их код.
+ * This package contains all the classes related to reading/writing Minecraft packets,
+ * as implemented by the core developers — primarily proxy classes that allow us
+ * to insert our logic into their code.
  * <p>
- * Могут возникнуть проблемы на новых версиях. TODO.
+ * Issues may arise with newer versions. TODO.
  */
 package by.milansky.protocol.vanilla.codec;

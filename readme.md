@@ -6,57 +6,51 @@
   <img src="https://img.shields.io/github/stars/rmilansky/minecraft-protocol-java?style=flat" />
 </div>
 
-# Введение
+# Introduction
 
-Minecraft Protocol - проект, написанный мной из-за того, что все библиотеки для взаимодействия с пакетами слишком
-устарели, либо недостаточно легки для использования в моих проектах (также из-за глобальной переписи всей кодовой
-базы [Abelix](https://abelix.team)).
+Minecraft Protocol is a project I developed because all existing libraries for packet handling are either outdated or insufficiently lightweight for use in my projects (also due to a complete rewrite of the [Abelix](https://abelix.team) codebase).
 
-Проект был написан буквально за один подход одним человеком, возможны баги/некрасивый код, но буду очень рад любым пулл
-реквестам и issue.
+The project was written in a single attempt by one person, so there might be bugs or less-than-perfect code. I would greatly appreciate any pull requests or issues.
 
 <img src=".assets/time.jpg" width="500"/>
 
-# Краткий обзор проекта
+# Project Overview
 
-## Для чего это всё?
+## Purpose
 
-Проект нужен для максимально удобной и интегрируемой разработки систем, для которых нужно использование пакетов
-протокола Minecraft (e.g. фейк энтити, неймтеги для серверов, прокси системы).
+This project is designed for the most convenient and integrable development of systems that require the use of Minecraft protocol packets (e.g., fake entities, nametags for servers, proxy systems).
 
-## Основные задачи
+## Key Objectives
 
-* Максимально простое взаимодействие с пакетами и их прослушкой
-* Интеграция во все современные ядра / standalone приложения
+* Simplify packet handling and monitoring as much as possible.
+* Ensure integration with all modern server cores and standalone applications.
 
-# Руководство по использованию
+# Usage Guide
 
-Более глубокие примеры использования можно посмотреть в директории [examples](examples).
-Но если попытаться объяснить кратко, то вот, например, как прослушать все ClientboundTeam пакеты:
+More detailed usage examples can be found in the [examples](examples) directory. However, to briefly explain, here's how you can listen to all `ClientboundTeam` packets:
 
-1. Создаем сам хандлер, который будет заниматься обработкой пакетов:
+1. Create a handler to process packets:
 
 ```java
-
 @Log4j2
 public final class ClientboundTeamHandler {
     @PacketProcessor
     public @NotNull PacketHandleResult handle(final Channel channel, final ClientboundTeam team) {
-        // Логируем, что сервер пытается отправить пакет
+        // Log that the server is attempting to send a packet
         log.info("Outbound team packet: {}", team);
 
         if (team.containsPlayer("milanskyy")) {
-            // Предотвращаем отправку пакета
+            // Prevent the packet from being sent
             return BasePacketHandleResult.cancel();
         }
 
-        // Всё окей, просто разрешаем его отправку
+        // Everything is fine; allow the packet to be sent
         return BasePacketHandleResult.ok();
     }
 }
 ```
 
-2. Добавляем его игроку при входе:
+2. Add the handler on player join:
 
 ```java
 public final class NametagListener implements Listener {
@@ -64,8 +58,8 @@ public final class NametagListener implements Listener {
     public void onCreate(final ProtocolPlayerCreateEvent event) {
         val protocolPlayer = event.protocolPlayer();
 
-        // Так как это хандлер базированный на аннотациях, оборачиваем его в AnnotationBasedHandler
-        // и непосредственно добавляем игроку
+        // Since this handler is annotation-based, wrap it in an AnnotationBasedHandler
+        // and add it to the player
         protocolPlayer.appendPacketHandler(AnnotationBasedHandler.create(ClientboundTeamHandler.create()));
     }
 }
@@ -73,8 +67,7 @@ public final class NametagListener implements Listener {
 
 # Credits
 
-Большое спасибо за идеи и информацию этим проектам:
+Special thanks for ideas and inspiration to these projects:
 
-* [Velocity](https://github.com/PaperMC/Velocity), [BungeeCord](https://github.com/SpigotMC/BungeeCord) - за некоторые
-  идеи и структуру пакетов
-* [BridgeNet](https://github.com/MikhailSterkhov/bridgenet) - за идею этого прекрасного readme
+* [Velocity](https://github.com/PaperMC/Velocity), [BungeeCord](https://github.com/SpigotMC/BungeeCord) -  for some ideas and packet structures.
+* [BridgeNet](https://github.com/MikhailSterkhov/bridgenet) - for the idea of this beautiful readme

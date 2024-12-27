@@ -18,8 +18,8 @@ import java.util.Map;
 /**
  * @author milansky
  * <p>
- * Выглядит убого, но примерно только так можно добиться константного времени
- * не подключая лишних либ (e.g. BidirectionalMap - де-факто то же самое)
+ * Looks lame, but this is roughly the only way to achieve constant time
+ * without adding extra libraries (e.g., BidirectionalMap - de-facto the same thing)
  */
 @NoArgsConstructor(staticName = "create")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
