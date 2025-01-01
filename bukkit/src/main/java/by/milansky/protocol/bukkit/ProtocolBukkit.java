@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
  * @author milansky
  */
 @Log4j2
-@Plugin(name = "Protocol", version = "1.0.0-ALPHA")
+@Plugin(name = "Protocol", version = "1.0.1-BETA")
 public class ProtocolBukkit extends JavaPlugin {
     private Injector injector;
 

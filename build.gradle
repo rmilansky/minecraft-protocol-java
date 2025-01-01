@@ -3,12 +3,13 @@ plugins {
 }
 
 allprojects {
-    group = 'by.milansky'
-    version = '1.0.0'
+    group = 'by.milansky.protocol'
+    version = '1.0.1'
 }
 
 configure(subprojects - project(':examples')) {
     apply plugin: 'java'
+    apply plugin: 'maven-publish'
 
     repositories {
         mavenLocal()
@@ -44,6 +45,35 @@ configure(subprojects - project(':examples')) {
 
         testImplementation libs.junit.api
         testRuntimeOnly libs.junit.engine
+    }
+
+    publishing {
+        repositories {
+            maven {
+                name = "milansky-repo"
+                url = uri("https://maven.milansky.ovh/releases")
+
+                credentials {
+                    username = System.getenv("MILANSKY_REPO_USER")
+                    password = System.getenv("MILANSKY_REPO_TOKEN")
+                }
+            }
+        }
+
+        publications {
+            gpr(MavenPublication) {
+                from(components.java)
+
+                pom {
+                    licenses {
+                        license {
+                            name = 'MIT License'
+                            url = 'https://github.com/rmilansky/minecraft-protocol-java/blob/master/LICENSE'
+                        }
+                    }
+                }
+            }
+        }
     }
 
     test {

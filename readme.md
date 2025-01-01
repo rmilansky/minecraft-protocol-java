@@ -2,7 +2,7 @@
   <img src=".assets/illustration.png" width="500"/>
   <br>
   <img src="https://img.shields.io/badge/language-java-gold?style=flat" />
-  <img src="https://img.shields.io/badge/beta-v1.0-gold?style=flat" />
+  <img src="https://img.shields.io/badge/beta-v1.0.1-gold?style=flat" />
   <img src="https://img.shields.io/github/stars/rmilansky/minecraft-protocol-java?style=flat" />
 </div>
 
@@ -25,7 +25,82 @@ This project is designed for the most convenient and integrable development of s
 * Simplify packet handling and monitoring as much as possible.
 * Ensure integration with all modern server cores and standalone applications.
 
+#
+
 # Usage Guide
+
+## Maven / Gradle library adding
+
+1. Add a repository:
+
+Maven: 
+```xml
+<repositories>
+    <repository>
+        <id>milansky-repo</id>
+        <url>https://maven.milansky.ovh/releases</url>
+    </repository>
+</repositories>
+```
+Gradle:
+```groovy
+repositories {
+    maven {
+        url = "https://maven.milansky.ovh/releases"
+    }
+}
+```
+
+2. Add dependencies
+
+Maven:
+```xml
+<properties>
+    <protocol.version>1.0.1</protocol.version>
+</properties>
+
+<dependencies>
+    <dependency>
+        <groupId>by.milansky.protocol</groupId>
+        <artifactId>api</artifactId>
+        <version>${protocol.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>by.milansky.protocol</groupId>
+        <artifactId>base</artifactId>
+        <version>${protocol.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>by.milansky.protocol</groupId>
+        <artifactId>vanilla-protocol</artifactId>
+        <version>${protocol.version}</version>
+    </dependency>
+    
+    <!-- Add bukkit if you need it -->
+    <dependency>
+        <groupId>by.milansky.protocol</groupId>
+        <artifactId>bukkit</artifactId>
+        <version>${protocol.version}</version>
+    </dependency>
+</dependencies>
+```
+
+Gradle: 
+```groovy
+dependencies {
+    // It's better to use gradle's dependencyResolutionManagement
+    def protocolVersion = '1.0.1'
+    
+    compileOnly "by.milansky.protocol:api:${protocolVersion}"
+    compileOnly "by.milansky.protocol:base:${protocolVersion}"
+    compileOnly "by.milansky.protocol:vanilla-protocol:${protocolVersion}"
+    
+    // Add bukkit if you need it
+    compileOnly "by.milansky.protocol:bukkit:${protocolVersion}"
+}
+```
+
+## Java API usage
 
 More detailed usage examples can be found in the [examples](examples) directory. However, to briefly explain, here's how you can listen to all `ClientboundTeam` packets:
 
