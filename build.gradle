@@ -1,10 +1,12 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     id 'com.gradleup.shadow' version '9.0.0-beta4' apply false
 }
 
 allprojects {
     group = 'by.milansky.protocol'
-    version = '1.0.1'
+    version = '1.1.0'
 }
 
 configure(subprojects - project(':examples')) {
@@ -27,6 +29,7 @@ configure(subprojects - project(':examples')) {
         testCompileOnly libs.lombok
         testAnnotationProcessor libs.lombok
 
+        compileOnly libs.fastutil
         compileOnly libs.netty.all
         compileOnly libs.log4j.core
         compileOnly libs.jetbrains.annotations
@@ -73,6 +76,23 @@ configure(subprojects - project(':examples')) {
                     }
                 }
             }
+        }
+    }
+
+    tasks {
+        register('processSource', Copy) {
+            from(sourceSets.main.java)
+            into("$buildDir/src")
+
+            inputs.property 'version', version
+            filter(ReplaceTokens, tokens: [version: version], beginToken: '${', endToken: '}')
+        }
+
+        compileJava {
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
+
+            source = processSource.outputs
         }
     }
 

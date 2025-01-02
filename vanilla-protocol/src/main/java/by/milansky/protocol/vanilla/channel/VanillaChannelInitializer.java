@@ -11,8 +11,11 @@ import by.milansky.protocol.vanilla.codec.VanillaPacketEncoder;
 import by.milansky.protocol.vanilla.handler.VanillaStateTrackingHandler;
 import by.milansky.protocol.vanilla.registry.VanillaStateRegistry;
 import by.milansky.protocol.vanilla.utility.ChannelUtility;
+import by.milansky.protocol.vanilla.version.VanillaProtocolVersion;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.AccessLevel;
@@ -32,7 +35,10 @@ import org.jetbrains.annotations.NotNull;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public final class VanillaChannelInitializer extends ChannelInitializer<Channel> {
-    private static final String CUSTOM_ENCODER_PIPELINE_NAME = "milansky-protocol-encoder";
+    private static final VanillaStateRegistry STANDARD_REGISTRY = VanillaStateRegistry.standardRegistry();
+    private static final String CUSTOM_ENCODER_PIPELINE_NAME = "milansky-protocol-encoder",
+            OUTBOUND_CONFIG_NAME = "outbound_config", INBOUND_CONFIG_NAME = "inbound_config",
+            ENCODER_NAME = "encoder", DECODER_NAME = "decoder";
 
     ProtocolVersion version;
     PacketHandler[] additionalHandlers;
@@ -47,7 +53,6 @@ public final class VanillaChannelInitializer extends ChannelInitializer<Channel>
 
     @Override
     public void initChannel(final @NotNull Channel channel) {
-        val pipeline = channel.pipeline();
         val packetHandler = BaseMergedPacketHandler.create(AnnotationBasedHandler.create(VanillaStateTrackingHandler.create()));
 
         packetHandler.append(additionalHandlers);
@@ -55,24 +60,45 @@ public final class VanillaChannelInitializer extends ChannelInitializer<Channel>
         channel.updateProtocolState(ProtocolState.HANDSHAKE);
         channel.updatePacketHandler(packetHandler);
 
-        val decoderName = pipeline.names().contains("inbound_config") ? "inbound_config" : "decoder";
-        val encoderName = pipeline.names().contains("outbound_config") ? "outbound_config" : "encoder";
+        if (version.greaterEqual(VanillaProtocolVersion.MINECRAFT_1_21)) {
+            initChannelModern(channel);
+            return;
+        }
+
+        initChannelBase(channel);
+    }
+
+    private void initChannelBase(final @NotNull Channel channel) {
+        val pipeline = channel.pipeline();
+
+        val decoderName = pipeline.names().contains(INBOUND_CONFIG_NAME) ? INBOUND_CONFIG_NAME : DECODER_NAME;
+        val encoderName = pipeline.names().contains(OUTBOUND_CONFIG_NAME) ? OUTBOUND_CONFIG_NAME : ENCODER_NAME;
 
         val encoder = (MessageToByteEncoder<?>) channel.pipeline().get(encoderName);
-        val outboundHandler = VanillaOutboundPacketHandler.create(
-                version, VanillaStateRegistry.standardRegistry(), encoder
-        );
+        val outboundHandler = VanillaOutboundPacketHandler.create(version, STANDARD_REGISTRY, encoder);
 
         pipeline.replace(encoder, encoderName, outboundHandler);
 
         val decoder = (ByteToMessageDecoder) channel.pipeline().get(decoderName);
-        val inboundHandler = VanillaInboundPacketHandler.create(
-                version, VanillaStateRegistry.standardRegistry(), decoder
-        );
+        val inboundHandler = VanillaInboundPacketHandler.create(version, STANDARD_REGISTRY, decoder);
 
         pipeline.replace(decoder, decoderName, inboundHandler);
+        pipeline.addAfter(encoderName, CUSTOM_ENCODER_PIPELINE_NAME, VanillaPacketEncoder.create(version, STANDARD_REGISTRY));
+    }
 
-        pipeline.addAfter(encoderName, CUSTOM_ENCODER_PIPELINE_NAME,
-                VanillaPacketEncoder.create(version, VanillaStateRegistry.standardRegistry()));
+    private void initChannelModern(final @NotNull Channel channel) {
+        val pipeline = channel.pipeline();
+        val outboundHandler = (ChannelOutboundHandlerAdapter) pipeline.get(OUTBOUND_CONFIG_NAME);
+
+        pipeline.replace(outboundHandler, OUTBOUND_CONFIG_NAME, ProxiedOutboundChannelInitializer.create(outboundHandler, () -> {
+            val inboundHandler = (ChannelDuplexHandler) pipeline.get(INBOUND_CONFIG_NAME);
+
+            pipeline.replace(inboundHandler, INBOUND_CONFIG_NAME, ProxiedInboundChannelHandler.create(inboundHandler, () -> {
+                initChannelBase(channel);
+
+                // FIXME: Just a workaround because of missing handshake :(
+                channel.updateProtocolState(ProtocolState.LOGIN);
+            }));
+        }));
     }
 }

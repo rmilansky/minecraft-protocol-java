@@ -63,8 +63,8 @@ public final class AnnotationBasedHandler implements PacketHandler {
 
                         try {
                             return (PacketHandleResult) declaredMethod.invoke(handler, channel, packet);
-                        } catch (final InvocationTargetException | IllegalAccessException e) {
-                            log.catching(e);
+                        } catch (final InvocationTargetException | IllegalAccessException throwable) {
+                            log.catching(throwable);
                         } finally {
                             declaredMethod.setAccessible(false);
                         }

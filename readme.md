@@ -2,15 +2,18 @@
   <img src=".assets/illustration.png" width="500"/>
   <br>
   <img src="https://img.shields.io/badge/language-java-gold?style=flat" />
-  <img src="https://img.shields.io/badge/beta-v1.0.1-gold?style=flat" />
+  <img src="https://img.shields.io/badge/v1.1.0-gold?style=flat" />
   <img src="https://img.shields.io/github/stars/rmilansky/minecraft-protocol-java?style=flat" />
 </div>
 
 # Introduction
 
-Minecraft Protocol is a project I developed because all existing libraries for packet handling are either outdated or insufficiently lightweight for use in my projects (also due to a complete rewrite of the [Abelix](https://abelix.team) codebase).
+Minecraft Protocol is a project I developed because all existing libraries for packet handling are either outdated or
+insufficiently lightweight for use in my projects (also due to a complete rewrite of the [Abelix](https://abelix.team)
+codebase).
 
-The project was written in a single attempt by one person, so there might be bugs or less-than-perfect code. I would greatly appreciate any pull requests or issues.
+The project was written in a single attempt by one person, so there might be bugs or less-than-perfect code. I would
+greatly appreciate any pull requests or issues.
 
 <img src=".assets/time.jpg" width="500"/>
 
@@ -18,7 +21,8 @@ The project was written in a single attempt by one person, so there might be bug
 
 ## Purpose
 
-This project is designed for the most convenient and integrable development of systems that require the use of Minecraft protocol packets (e.g., fake entities, nametags for servers, proxy systems).
+This project is designed for the most convenient and integrable development of systems that require the use of Minecraft
+protocol packets (e.g., fake entities, nametags for servers, proxy systems).
 
 ## Key Objectives
 
@@ -33,7 +37,8 @@ This project is designed for the most convenient and integrable development of s
 
 1. Add a repository:
 
-Maven: 
+Maven:
+
 ```xml
 <repositories>
     <repository>
@@ -42,7 +47,9 @@ Maven:
     </repository>
 </repositories>
 ```
+
 Gradle:
+
 ```groovy
 repositories {
     maven {
@@ -54,9 +61,10 @@ repositories {
 2. Add dependencies
 
 Maven:
+
 ```xml
 <properties>
-    <protocol.version>1.0.1</protocol.version>
+    <protocol.version>1.1.0</protocol.version>
 </properties>
 
 <dependencies>
@@ -85,11 +93,12 @@ Maven:
 </dependencies>
 ```
 
-Gradle: 
+Gradle:
+
 ```groovy
 dependencies {
     // It's better to use gradle's dependencyResolutionManagement
-    def protocolVersion = '1.0.1'
+    def protocolVersion = '1.1.0'
     
     compileOnly "by.milansky.protocol:api:${protocolVersion}"
     compileOnly "by.milansky.protocol:base:${protocolVersion}"
@@ -102,7 +111,8 @@ dependencies {
 
 ## Java API usage
 
-More detailed usage examples can be found in the [examples](examples) directory. However, to briefly explain, here's how you can listen to all `ClientboundTeam` packets:
+More detailed usage examples can be found in the [examples](examples) directory. However, to briefly explain, here's how
+you can listen to all `ClientboundTeam` packets:
 
 1. Create a handler to process packets:
 
@@ -144,5 +154,6 @@ public final class NametagListener implements Listener {
 
 Special thanks for ideas and inspiration to these projects:
 
-* [Velocity](https://github.com/PaperMC/Velocity), [BungeeCord](https://github.com/SpigotMC/BungeeCord) -  for some ideas and packet structures.
+* [Velocity](https://github.com/PaperMC/Velocity), [BungeeCord](https://github.com/SpigotMC/BungeeCord) - for some ideas
+  and packet structures.
 * [BridgeNet](https://github.com/MikhailSterkhov/bridgenet) - for the idea of this beautiful readme

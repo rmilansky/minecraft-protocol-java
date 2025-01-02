@@ -33,7 +33,8 @@ public final class NametagListener implements Listener {
                 Component.text(" JOB", NamedTextColor.GREEN, TextDecoration.BOLD),
                 ClientboundTeam.NameTagVisibility.ALWAYS,
                 ClientboundTeam.CollisionRule.NEVER,
-                0, (byte) 0, new String[]{protocolPlayer.nativePlayer().getName()}
+                NamedTextColor.WHITE,
+                (byte) 0, new String[]{protocolPlayer.nativePlayer().getName()}
         ));
     }
 }

@@ -86,6 +86,8 @@ public final class VanillaInboundPacketHandler extends ByteToMessageDecoder {
 
             byteBuf.writeVarInt(identifier);
             replacement.encode(byteBuf, version);
+        } catch (final Throwable throwable) {
+            log.catching(throwable);
         } finally {
             if (!cancelled) DECODE_METHOD_HANDLE.invoke(downstream, ctx, byteBuf, list);
 

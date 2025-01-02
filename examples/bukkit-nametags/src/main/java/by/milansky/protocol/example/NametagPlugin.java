@@ -8,7 +8,7 @@ import org.bukkit.plugin.java.annotation.plugin.Plugin;
 /**
  * @author milansky
  */
-@Plugin(name = "Nametags", version = "1.0.0-TEST")
+@Plugin(name = "Nametags", version = "${version}")
 @Description("An example plugin that shows how to use minecraft protocol library")
 public final class NametagPlugin extends JavaPlugin {
     @Override

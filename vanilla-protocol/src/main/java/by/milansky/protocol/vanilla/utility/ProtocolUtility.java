@@ -26,10 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Utilities for writing and reading data in the Minecraft protocol.
@@ -43,7 +40,7 @@ public class ProtocolUtility {
     private static final int[] VAR_INT_LENGTHS = new int[65];
 
     private static final GsonComponentSerializer PRE_1_16_SERIALIZER, PRE_1_20_3_SERIALIZER, MODERN_SERIALIZER;
-    private static final BinaryTagType[] BINARY_TAG_TYPES = new BinaryTagType[]{
+    private static final BinaryTagType<?>[] BINARY_TAG_TYPES = new BinaryTagType[]{
             BinaryTagTypes.END, BinaryTagTypes.BYTE, BinaryTagTypes.SHORT, BinaryTagTypes.INT,
             BinaryTagTypes.LONG, BinaryTagTypes.FLOAT, BinaryTagTypes.DOUBLE,
             BinaryTagTypes.BYTE_ARRAY, BinaryTagTypes.STRING, BinaryTagTypes.LIST,
@@ -59,10 +56,8 @@ public class ProtocolUtility {
                 .legacyHoverEventSerializer(NBTLegacyHoverEventSerializer.get())
                 .options(
                         OptionState.optionState()
-                                // before 1.16
                                 .value(JSONOptions.EMIT_RGB, Boolean.FALSE)
                                 .value(JSONOptions.EMIT_HOVER_EVENT_TYPE, JSONOptions.HoverEventValueMode.LEGACY_ONLY)
-                                // before 1.20.3
                                 .value(JSONOptions.EMIT_COMPACT_TEXT_COMPONENT, Boolean.FALSE)
                                 .value(JSONOptions.EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, Boolean.FALSE)
                                 .value(JSONOptions.VALIDATE_STRICT_EVENTS, Boolean.FALSE)
@@ -74,10 +69,8 @@ public class ProtocolUtility {
                 .legacyHoverEventSerializer(NBTLegacyHoverEventSerializer.get())
                 .options(
                         OptionState.optionState()
-                                // after 1.16
                                 .value(JSONOptions.EMIT_RGB, Boolean.TRUE)
                                 .value(JSONOptions.EMIT_HOVER_EVENT_TYPE, JSONOptions.HoverEventValueMode.MODERN_ONLY)
-                                // before 1.20.3
                                 .value(JSONOptions.EMIT_COMPACT_TEXT_COMPONENT, Boolean.FALSE)
                                 .value(JSONOptions.EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, Boolean.FALSE)
                                 .value(JSONOptions.VALIDATE_STRICT_EVENTS, Boolean.FALSE)
@@ -89,10 +82,8 @@ public class ProtocolUtility {
                 .legacyHoverEventSerializer(NBTLegacyHoverEventSerializer.get())
                 .options(
                         OptionState.optionState()
-                                // after 1.16
                                 .value(JSONOptions.EMIT_RGB, Boolean.TRUE)
                                 .value(JSONOptions.EMIT_HOVER_EVENT_TYPE, JSONOptions.HoverEventValueMode.MODERN_ONLY)
-                                // after 1.20.3
                                 .value(JSONOptions.EMIT_COMPACT_TEXT_COMPONENT, Boolean.TRUE)
                                 .value(JSONOptions.EMIT_HOVER_SHOW_ENTITY_ID_AS_INT_ARRAY, Boolean.TRUE)
                                 .value(JSONOptions.VALIDATE_STRICT_EVENTS, Boolean.TRUE)
@@ -450,9 +441,9 @@ public class ProtocolUtility {
     }
 
     public static BinaryTag serializeBinaryTag(final JsonElement json) {
-        if (json instanceof JsonPrimitive jsonPrimitive) {
+        if (json instanceof final JsonPrimitive jsonPrimitive) {
             if (jsonPrimitive.isNumber()) {
-                Number number = json.getAsNumber();
+                final Number number = json.getAsNumber();
 
                 if (number instanceof Byte) {
                     return ByteBinaryTag.byteBinaryTag((Byte) number);
@@ -477,25 +468,25 @@ public class ProtocolUtility {
                 throw new IllegalArgumentException("Unknown JSON primitive: " + jsonPrimitive);
             }
         } else if (json instanceof JsonObject) {
-            CompoundBinaryTag.Builder compound = CompoundBinaryTag.builder();
+            final CompoundBinaryTag.Builder compound = CompoundBinaryTag.builder();
 
-            for (Map.Entry<String, JsonElement> property : ((JsonObject) json).entrySet()) {
+            for (final Map.Entry<String, JsonElement> property : ((JsonObject) json).entrySet()) {
                 compound.put(property.getKey(), serializeBinaryTag(property.getValue()));
             }
 
             return compound.build();
         } else if (json instanceof JsonArray) {
-            List<JsonElement> jsonArray = ((JsonArray) json).asList();
+            final JsonArray jsonArray = json.getAsJsonArray();
 
             if (jsonArray.isEmpty()) {
                 return ListBinaryTag.empty();
             }
 
-            List<BinaryTag> tagItems = new ArrayList<>(jsonArray.size());
+            final List<BinaryTag> tagItems = new ArrayList<>(jsonArray.size());
             BinaryTagType<? extends BinaryTag> listType = null;
 
-            for (JsonElement jsonEl : jsonArray) {
-                BinaryTag tag = serializeBinaryTag(jsonEl);
+            for (final JsonElement jsonEl : jsonArray) {
+                final BinaryTag tag = serializeBinaryTag(jsonEl);
                 tagItems.add(tag);
 
                 if (listType == null) {
@@ -505,29 +496,29 @@ public class ProtocolUtility {
                 }
             }
 
-            switch (listType.id()) {
-                case 1://BinaryTagTypes.BYTE:
-                    byte[] bytes = new byte[jsonArray.size()];
+            switch (Objects.requireNonNull(listType).id()) {
+                case 1:
+                    final byte[] bytes = new byte[jsonArray.size()];
                     for (int i = 0; i < bytes.length; i++) {
                         bytes[i] = jsonArray.get(i).getAsNumber().byteValue();
                     }
 
                     return ByteArrayBinaryTag.byteArrayBinaryTag(bytes);
-                case 3://BinaryTagTypes.INT:
-                    int[] ints = new int[jsonArray.size()];
+                case 3:
+                    final int[] ints = new int[jsonArray.size()];
                     for (int i = 0; i < ints.length; i++) {
                         ints[i] = jsonArray.get(i).getAsNumber().intValue();
                     }
 
                     return IntArrayBinaryTag.intArrayBinaryTag(ints);
-                case 4://BinaryTagTypes.LONG:
-                    long[] longs = new long[jsonArray.size()];
+                case 4:
+                    final long[] longs = new long[jsonArray.size()];
                     for (int i = 0; i < longs.length; i++) {
                         longs[i] = jsonArray.get(i).getAsNumber().longValue();
                     }
 
                     return LongArrayBinaryTag.longArrayBinaryTag(longs);
-                case 10://BinaryTagTypes.COMPOUND:
+                case 10:
                     tagItems.replaceAll(tag -> {
                         if (tag.type() == BinaryTagTypes.COMPOUND) {
                             return tag;

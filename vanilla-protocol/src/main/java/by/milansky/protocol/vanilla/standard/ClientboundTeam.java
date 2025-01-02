@@ -3,6 +3,7 @@ package by.milansky.protocol.vanilla.standard;
 import by.milansky.protocol.api.packet.Packet;
 import by.milansky.protocol.api.version.ProtocolVersion;
 import by.milansky.protocol.vanilla.utility.ProtocolUtility;
+import by.milansky.protocol.vanilla.utility.TextColorUtility;
 import by.milansky.protocol.vanilla.version.VanillaProtocolVersion;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
@@ -10,6 +11,7 @@ import lombok.experimental.Accessors;
 import lombok.experimental.ExtensionMethod;
 import lombok.experimental.FieldDefaults;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,36 +33,42 @@ public final class ClientboundTeam implements Packet {
     Component displayName, prefix, suffix;
     NameTagVisibility nameTagVisibility;
     CollisionRule collisionRule;
-    int color;
+    NamedTextColor color;
     byte friendlyFire;
     String[] players;
 
     @Override
     public void encode(final @NotNull ByteBuf byteBuf, final @NotNull ProtocolVersion version) {
+        val colorId = TextColorUtility.toId(color);
+
         byteBuf.writeString(name);
         byteBuf.writeByte(mode.ordinal());
-
         if (mode == TeamMode.CREATE || mode == TeamMode.UPDATE) {
-            byteBuf.writeComponent(version, displayName, version.lower(VanillaProtocolVersion.MINECRAFT_1_13));
-
-            if (version.lower(VanillaProtocolVersion.MINECRAFT_1_13)) {
+            if (version.lowerEqual(VanillaProtocolVersion.MINECRAFT_1_12_2)) {
+                byteBuf.writeComponent(version, displayName, true);
                 byteBuf.writeComponent(version, prefix, true);
                 byteBuf.writeComponent(version, suffix, true);
-            }
 
-            byteBuf.writeByte(friendlyFire);
-            byteBuf.writeString(nameTagVisibility.identifier());
+                byteBuf.writeByte(friendlyFire);
 
-            if (version.greaterEqual(VanillaProtocolVersion.MINECRAFT_1_9))
-                byteBuf.writeString(collisionRule.identifier());
+                byteBuf.writeString(nameTagVisibility.identifier);
 
-            if (version.greaterEqual(VanillaProtocolVersion.MINECRAFT_1_13)) {
-                byteBuf.writeInt(color);
+                if (version.greaterEqual(VanillaProtocolVersion.MINECRAFT_1_9))
+                    byteBuf.writeString(collisionRule.identifier);
+
+                byteBuf.writeByte(colorId);
             } else {
-                byteBuf.writeByte(color);
-            }
+                byteBuf.writeComponent(version, displayName, false);
+                byteBuf.writeByte(friendlyFire);
+                byteBuf.writeString(nameTagVisibility.identifier);
+                byteBuf.writeString(collisionRule.identifier);
 
-            if (version.greaterEqual(VanillaProtocolVersion.MINECRAFT_1_13)) {
+                if (version.greaterEqual(VanillaProtocolVersion.MINECRAFT_1_17)) {
+                    byteBuf.writeVarInt(colorId);
+                } else {
+                    byteBuf.writeByte(colorId);
+                }
+
                 byteBuf.writeComponent(version, prefix, false);
                 byteBuf.writeComponent(version, suffix, false);
             }
@@ -88,7 +96,10 @@ public final class ClientboundTeam implements Packet {
 
             if (version.greaterEqual(VanillaProtocolVersion.MINECRAFT_1_9))
                 collisionRule = CollisionRule.ruleByIdentifier(byteBuf.readString());
-            color = version.greaterEqual(VanillaProtocolVersion.MINECRAFT_1_13) ? byteBuf.readVarInt() : byteBuf.readByte();
+
+            color = TextColorUtility.fromId(version.greaterEqual(VanillaProtocolVersion.MINECRAFT_1_13)
+                    ? byteBuf.readVarInt()
+                    : byteBuf.readByte());
 
             if (version.greaterEqual(VanillaProtocolVersion.MINECRAFT_1_13)) {
                 prefix = byteBuf.readComponent(version, false);

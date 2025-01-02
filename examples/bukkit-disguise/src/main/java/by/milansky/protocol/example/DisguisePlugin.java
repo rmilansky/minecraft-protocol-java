@@ -16,7 +16,7 @@ import org.bukkit.plugin.java.annotation.plugin.Plugin;
 @Commands({
         @Command(name = "disguise")
 })
-@Plugin(name = "Disguise", version = "1.0.0-TEST")
+@Plugin(name = "Disguise", version = "${version}")
 @Description("An example plugin that shows how to use minecraft protocol library")
 public final class DisguisePlugin extends JavaPlugin {
     @Override
