@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 @Log4j2
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor(staticName = "create", access = AccessLevel.PACKAGE)
-final class ProxiedOutboundChannelInitializer extends ChannelOutboundHandlerAdapter {
+final class ProxiedOutboundChannelHandler extends ChannelOutboundHandlerAdapter {
     ChannelOutboundHandlerAdapter parent;
     Runnable afterWrite;
 

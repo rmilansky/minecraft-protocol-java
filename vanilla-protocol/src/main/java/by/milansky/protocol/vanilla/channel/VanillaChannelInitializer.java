@@ -90,7 +90,7 @@ public final class VanillaChannelInitializer extends ChannelInitializer<Channel>
         val pipeline = channel.pipeline();
         val outboundHandler = (ChannelOutboundHandlerAdapter) pipeline.get(OUTBOUND_CONFIG_NAME);
 
-        pipeline.replace(outboundHandler, OUTBOUND_CONFIG_NAME, ProxiedOutboundChannelInitializer.create(outboundHandler, () -> {
+        pipeline.replace(outboundHandler, OUTBOUND_CONFIG_NAME, ProxiedOutboundChannelHandler.create(outboundHandler, () -> {
             val inboundHandler = (ChannelDuplexHandler) pipeline.get(INBOUND_CONFIG_NAME);
 
             pipeline.replace(inboundHandler, INBOUND_CONFIG_NAME, ProxiedInboundChannelHandler.create(inboundHandler, () -> {
