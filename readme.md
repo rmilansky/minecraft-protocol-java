@@ -2,7 +2,7 @@
   <img src=".assets/illustration.png" width="500"/>
   <br>
   <img src="https://img.shields.io/badge/language-java-gold?style=flat" />
-  <img src="https://img.shields.io/badge/v1.1.0-gold?style=flat" />
+  <img src="https://img.shields.io/badge/v1.1.1-gold?style=flat" />
   <img src="https://img.shields.io/github/stars/rmilansky/minecraft-protocol-java?style=flat" />
 </div>
 
@@ -64,7 +64,7 @@ Maven:
 
 ```xml
 <properties>
-    <protocol.version>1.1.0</protocol.version>
+    <protocol.version>1.1.1</protocol.version>
 </properties>
 
 <dependencies>
@@ -98,7 +98,7 @@ Gradle:
 ```groovy
 dependencies {
     // It's better to use gradle's dependencyResolutionManagement
-    def protocolVersion = '1.1.0'
+    def protocolVersion = '1.1.1'
     
     compileOnly "by.milansky.protocol:api:${protocolVersion}"
     compileOnly "by.milansky.protocol:base:${protocolVersion}"

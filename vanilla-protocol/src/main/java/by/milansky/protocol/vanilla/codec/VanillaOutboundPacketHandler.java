@@ -84,7 +84,10 @@ public final class VanillaOutboundPacketHandler extends MessageToByteEncoder<Obj
 
             val handleResult = channel.packetHandler().handle(channel, packet);
 
-            if (handleResult.cancelled()) return;
+            if (handleResult.cancelled()) {
+                byteBuf.clear();
+                return;
+            }
 
             val replacement = handleResult.replacement();
             if (replacement == null) return;
